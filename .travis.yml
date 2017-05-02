@@ -1,0 +1,11 @@
+language: elixir
+sudo: false
+elixir: 1.4.1
+otp_release: 19.1
+script:
+- MIX_ENV=test mix test
+- mix credo --strict
+notifications:
+  slack:
+    rooms:
+      secure: YqqgyGjc37C5u+KlIUm7vZwXzkw++n4aQIcPF8RUPztphIWDqIYdHEEiOVf37tPcHOjPdUZ6vm+u6qXz5Ti6+1UcrEdKQS8ucxCqbg6F+ux2Go0lQNQgbibVLhlW1z/vdfwC476nDuTpdSO8xlbWcOcjeB4vjQQlGNrGkWq3SPySwnZ3U6trhe3Chtm6mtV22s2IpVlPiOGo6Tks74J2IXK7WbcY0vnxMDDxnxq+PVe9dP96BE0StNTVgBgw8lInZJWskzgERn4VYsJv1iEqlLZ2HY3oSNqMbbZG3umJXcbsfP3THGzEEu7czDa4pa2y44GjzIbLxxPgMkt8AszwlVkOMfCugIFSp4BxqeCxfy3bEo4vX8Cb8Iqy97/lOtnSv/MDZaV+cOO7fj90HclAdVJuvHGhY/7Bm2tuW83E4d6vpLXtAd0148JemSB3B59KWDM3xfoosVQHFmAxT24dJFlNHKkEdyyScOFbG0Q2NTPGO0YMunQ7fGOUsS+qep2EfstvL83/uY6gfkhyJFnYYhXBoXwtuDvLW0laU32/pdK7J9eI/4Uvcjw1P81HHeWgUVq8rgPNmXD/n/0kjBDGP7PCRuzyDY0MtdQgNlM941k3IfjazfOVkxeF7AuuYJ0IuMy0tPmM/oQMSDH7URCSo46kAvNjLK9yWt2O0YQdZBo=

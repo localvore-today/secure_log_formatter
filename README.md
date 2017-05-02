@@ -1,4 +1,4 @@
-# SecureLogFormatter
+# SecureLogFormatter [![Build Status](https://travis-ci.org/localvore-today/secure_log_formatter.svg?branch=master)](https://travis-ci.org/localvore-today/secure_log_formatter)
 
 A secure formatter for Elixir Logger and replacement for `Kernel.inspect/1`.  Using blacklisted keys and patterns `SecureLogFormatter` will identify and redact sensitive information from logs with ease.
 
