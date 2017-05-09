@@ -30,7 +30,7 @@ defmodule SecureLogFormatter.Mixfile do
 
   defp package do
     [
-      contributors: ["Sean Callan"],
+      maintainers: ["Sean Callan"],
       licenses: ["MIT"],
       links: %{
         github: "https://github.com/localvore-today/secure_log_formatter"
