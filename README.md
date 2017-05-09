@@ -7,7 +7,7 @@ A secure formatter for Elixir Logger and replacement for `Kernel.inspect/1`.  Us
 
 ```elixir
 def deps do
-  [{:secure_log_formatter, "~> 0.1.0"}]
+  [{:secure_log_formatter, "~> 1.0"}]
 end
 ```
 
