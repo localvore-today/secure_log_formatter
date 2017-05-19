@@ -51,6 +51,44 @@ defmodule SecureLogFormatter do
     |> Kernel.inspect
   end
 
+  @doc """
+  Sanitize the input value.
+
+  # Examples
+
+      iex> SecureLogFormatter.sanitize(%{user: "username", password: "abc123"})
+      %{password: \"[REDACTED]\", user: \"username\"}
+
+      iex> SecureLogFormatter.sanitize([access_token: "secret"])
+      [access_token: \"[REDACTED]\"]
+
+      iex> SecureLogFormatter.sanitize("Customer CC 4111111111111111")
+      "Customer CC [REDACTED]"
+  """
+  def sanitize(data) when is_binary(data) do
+    Enum.reduce(@patterns, data, &Regex.replace(&1, &2, @label))
+  end
+
+  def sanitize(data) when is_list(data) do
+    Enum.map(data, &sanitize/1)
+  end
+
+  def sanitize(data) when is_map(data) do
+    data
+    |> Enum.map(&sanitize/1)
+    |> Enum.into(%{})
+  end
+
+  def sanitize({key, value}) do
+    if censor_field?(key) do
+      {key, @label}
+    else
+      {key, sanitize(value)}
+    end
+  end
+
+  def sanitize(other), do: other
+
   defp censor_field?(key) do
     normalized =
       key
@@ -64,28 +102,4 @@ defmodule SecureLogFormatter do
   defp key_match?(pattern, pattern), do: true
   defp key_match?(pattern, _) when is_binary(pattern), do: false
   defp key_match?(pattern, key), do: Regex.match?(pattern, key)
-
-  defp sanitize(data) when is_binary(data) do
-    Enum.reduce(@patterns, data, &Regex.replace(&1, &2, @label))
-  end
-
-  defp sanitize(data) when is_list(data) do
-    Enum.map(data, &sanitize/1)
-  end
-
-  defp sanitize(data) when is_map(data) do
-    data
-    |> Enum.map(&sanitize/1)
-    |> Enum.into(%{})
-  end
-
-  defp sanitize({key, value}) do
-    if censor_field?(key) do
-      {key, @label}
-    else
-      {key, sanitize(value)}
-    end
-  end
-
-  defp sanitize(other), do: other
 end
