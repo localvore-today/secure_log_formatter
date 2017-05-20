@@ -30,7 +30,7 @@ config :logger,
       fields: ["password", "credit_card", ~r/.*_token/],
 
       # Patterns which if found, should be hidden
-      patterns: [~r/4[0-9]{15}/] # Simple credit card example
+      patterns: [~r/4[0-9]{15}/], # Simple credit card example
 
       # defaults to "[REDACTED]"
       replacement: "[PRIVATE]"

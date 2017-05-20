@@ -81,7 +81,7 @@ defmodule SecureLogFormatter do
 
   def sanitize(other), do: other
 
-  defp blacklisted_fields, do: Keyword.get(config(), :fields, []) ++ @default_fields
+  defp blacklisted_fields, do: Keyword.get(config(), :fields, @default_fields)
 
   defp blacklisted_patterns, do: Keyword.get(config(), :patterns, [])
 
