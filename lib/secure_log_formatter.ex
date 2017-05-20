@@ -10,14 +10,6 @@ defmodule SecureLogFormatter do
   @default_fields [~r/\w*_token/, "credit_card", "password"]
   @default_pattern "\n$time $metadata[$level] $levelpad$message\n"
 
-  config = Application.get_env(:logger, :secure_log_formatter, [])
-  @fields Keyword.get(config, :fields, []) ++ @default_fields
-  @label Keyword.get(config, :replacement, "[REDACTED]")
-  @patterns Keyword.get(config, :patterns, [])
-  @format_config config
-    |> Keyword.get(:format, @default_pattern)
-    |> Formatter.compile
-
   def default_fields, do: @default_fields
 
   @doc """
@@ -29,7 +21,7 @@ defmodule SecureLogFormatter do
       ["\\n", :time, " ", "", "[", "info", "] ", " ", "CC [REDACTED]", "\\n"]
   """
   def format(level, msg, ts, md),
-    do: Formatter.format(@format_config, level, sanitize(msg), ts, md)
+    do: Formatter.format(format_config(), level, sanitize(msg), ts, md)
 
   @doc """
   Securely inspect a value.
@@ -66,7 +58,7 @@ defmodule SecureLogFormatter do
       "Customer CC [REDACTED]"
   """
   def sanitize(data) when is_binary(data) do
-    Enum.reduce(@patterns, data, &Regex.replace(&1, &2, @label))
+    Enum.reduce(blacklisted_patterns(), data, &replace/2)
   end
 
   def sanitize(data) when is_list(data) do
@@ -81,13 +73,17 @@ defmodule SecureLogFormatter do
 
   def sanitize({key, value}) do
     if censor_field?(key) do
-      {key, @label}
+      {key, replacement()}
     else
       {key, sanitize(value)}
     end
   end
 
   def sanitize(other), do: other
+
+  defp blacklisted_fields, do: Keyword.get(config(), :fields, []) ++ @default_fields
+
+  defp blacklisted_patterns, do: Keyword.get(config(), :patterns, [])
 
   defp censor_field?(key) do
     normalized =
@@ -96,10 +92,22 @@ defmodule SecureLogFormatter do
       |> String.replace(" ", "_")
       |> String.downcase
 
-    Enum.any?(@fields, &key_match?(&1, normalized))
+    Enum.any?(blacklisted_fields(), &key_match?(&1, normalized))
+  end
+
+  defp config, do: Application.get_env(:logger, :secure_log_formatter, [])
+
+  defp format_config do
+    config()
+    |> Keyword.get(:format, @default_pattern)
+    |> Formatter.compile
   end
 
   defp key_match?(pattern, pattern), do: true
   defp key_match?(pattern, _) when is_binary(pattern), do: false
   defp key_match?(pattern, key), do: Regex.match?(pattern, key)
+
+  defp replace(pattern, value), do: Regex.replace(pattern, value, replacement())
+
+  defp replacement, do: Keyword.get(config(), :replacement, "[REDACTED]")
 end
