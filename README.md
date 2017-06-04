@@ -37,6 +37,16 @@ config :logger,
     ]
 ```
 
+#### Recompilation
+
+When you change the config for a pattern, field or replacement for the `secure_log_formatter`
+configuration, the dependency will have to be recompiled in order for the
+change to take effect. This is because the configuration is compiled as
+module attributes at compile time in SecureLogFormatter.
+```
+ mix do deps.compile secure_log_formatter --force
+```
+
 #### Log formatting
 
 Using `SecureLogFormatter` is easy, we only need to pass a tuple to the `:format` option for our logging backend(s):
