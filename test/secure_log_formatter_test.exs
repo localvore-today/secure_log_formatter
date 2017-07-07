@@ -31,4 +31,11 @@ defmodule SecureLogFormatterTest do
       end) =~ "[REDACTED]"
     end
   end
+
+  describe "sanitizing improper lists" do
+    test "sanitizes improper lists" do
+      improper_list = [{:password, "abc123"}, {:username, "doomspork"} | {:credit_card, "4111111111111111"}]
+      assert SecureLogFormatter.sanitize(improper_list) == [{:password, "[REDACTED]"}, {:username, "doomspork"} | {:credit_card, "[REDACTED]"}]
+    end
+  end
 end
