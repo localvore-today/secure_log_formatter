@@ -57,12 +57,16 @@ defmodule SecureLogFormatter do
       iex> SecureLogFormatter.sanitize("Customer CC 4111111111111111")
       "Customer CC [REDACTED]"
   """
+
   def sanitize(data) when is_binary(data) do
     Enum.reduce(blacklisted_patterns(), data, &replace/2)
   end
 
   def sanitize(data) when is_list(data) do
-    sanitize_list(data, [])
+    case :io_lib.char_list(data) do
+      true -> data |> to_string() |> sanitize()
+      false -> sanitize_list(data, [])
+    end
   end
 
   def sanitize(data) when is_map(data) do
