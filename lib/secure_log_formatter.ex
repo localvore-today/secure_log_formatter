@@ -67,7 +67,7 @@ defmodule SecureLogFormatter do
       false -> sanitize_list(data, [])
     end
   end
-  
+
   def sanitize(data) when is_map(data) do
     data
     |> Enum.map(&sanitize/1)
