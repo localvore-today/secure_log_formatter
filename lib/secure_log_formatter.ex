@@ -62,9 +62,12 @@ defmodule SecureLogFormatter do
   end
 
   def sanitize(data) when is_list(data) do
-    Enum.map(data, &sanitize/1)
+    case :io_lib.deep_char_list(data) do
+      true -> data |> to_string() |> sanitize()
+      false -> sanitize_list(data, [])
+    end
   end
-
+  
   def sanitize(data) when is_map(data) do
     data
     |> Enum.map(&sanitize/1)
@@ -80,6 +83,10 @@ defmodule SecureLogFormatter do
   end
 
   def sanitize(other), do: other
+
+  def sanitize_list([], acc), do: acc |> Enum.reverse
+  def sanitize_list([data | rest], acc), do: sanitize_list(rest, [sanitize(data) | acc])
+  def sanitize_list(improper_tail, acc), do: (acc |> Enum.reverse) ++ sanitize(improper_tail)
 
   defp blacklisted_fields, do: Keyword.get(config(), :fields, @default_fields)
 
