@@ -63,7 +63,7 @@ defmodule SecureLogFormatter do
   end
 
   def sanitize(data) when is_list(data) do
-    case :io_lib.char_list(data) do
+    case :io_lib.deep_char_list(data) do
       true -> data |> to_string() |> sanitize()
       false -> sanitize_list(data, [])
     end

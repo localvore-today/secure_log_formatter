@@ -41,5 +41,9 @@ defmodule SecureLogFormatterTest do
     test "sanitizes charlists" do
       assert SecureLogFormatter.sanitize('password: "secret"') == "password: [REDACTED]"
     end
+
+    test "sanitizes deep charlists" do
+      assert SecureLogFormatter.sanitize(['hello '] ++ 'password: "secret"') == "hello password: [REDACTED]"
+    end
   end
 end
