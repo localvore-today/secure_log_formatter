@@ -1,7 +1,7 @@
 defmodule SecureLogFormatter.Mixfile do
   use Mix.Project
 
-  @version "1.1.0"
+  @version "1.2.0"
 
   def project do
     [app: :secure_log_formatter,
@@ -23,7 +23,7 @@ defmodule SecureLogFormatter.Mixfile do
       # Development and Test dependencies
       {:localvore_credo_checks,
         github: "localvore-today/localvore-credo-checks", only: [:dev, :test]},
-      {:credo, "~> 0.7", only: [:dev, :test]},
+      {:credo, "~> 0.8", only: [:dev, :test]},
       {:ex_doc, "~> 0.14", only: :dev}
     ]
   end
